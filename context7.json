@@ -1,0 +1,6 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "GB.js",
+  "description": "Headless Game Boy, Game Boy Color, and Game Boy Advance emulator cores.",
+  "excludeFolders": ["dist", "node_modules", "coverage", "test-data", "_"]
+}

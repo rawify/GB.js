@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181a19">
+    <title>GB.js ROM Player</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-model="empty">
+    <header class="topbar">
+        <a class="brand" href="../README.md" aria-label="GB.js documentation">
+            <span class="brand__mark" aria-hidden="true">GB</span>
+            <span>GB.js</span>
+        </a>
+        <div class="session-status" aria-live="polite">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Waiting for ROM</span>
+        </div>
+        <button class="icon-button" id="open-button" type="button" title="Open ROM" aria-label="Open ROM">
+            <span aria-hidden="true">＋</span>
+        </button>
+    </header>
+
+    <main class="workspace">
+        <aside class="library-panel" aria-label="ROM information">
+            <div class="panel-heading">
+                <p class="eyebrow">Local cartridge</p>
+                <h1 id="game-title">Load a game</h1>
+                <p class="game-subtitle" id="game-subtitle">Your ROM stays in this browser.</p>
+            </div>
+
+            <button class="drop-zone" id="drop-zone" type="button">
+                <span class="drop-zone__icon" aria-hidden="true">↥</span>
+                <span class="drop-zone__label">Choose a ROM</span>
+                <span class="drop-zone__hint">or drop .gb, .gbc, .gba or GBA BIOS .bin here</span>
+            </button>
+            <input id="rom-input" type="file" accept=".gb,.gbc,.gba,.bin,application/octet-stream" hidden>
+
+            <dl class="rom-facts" id="rom-facts" hidden>
+                <div><dt>System</dt><dd id="fact-system">—</dd></div>
+                <div><dt>Cartridge</dt><dd id="fact-cartridge">—</dd></div>
+                <div><dt>ROM size</dt><dd id="fact-size">—</dd></div>
+                <div><dt>Header</dt><dd id="fact-header">—</dd></div>
+            </dl>
+
+            <button class="manager-launch" id="cartridge-manager-button" type="button" hidden disabled>
+                <span aria-hidden="true">▤</span>
+                <span>Cartridge manager</span>
+                <span aria-hidden="true">›</span>
+            </button>
+
+            <div class="key-guide" aria-label="Controls">
+                <p class="eyebrow">Controls</p>
+                <div><span>Gamepad</span><span>Standard layout</span></div>
+                <div><span>Move</span><span><kbd>Arrows</kbd> <kbd>WASD</kbd></span></div>
+                <div><span>A / B</span><span><kbd>Z</kbd> <kbd>X</kbd></span></div>
+                <div><span>L / R (GBA)</span><span><kbd>Q</kbd> <kbd>E</kbd></span></div>
+                <div><span>Start / Select</span><span><kbd>Enter</kbd> <kbd>Shift</kbd></span></div>
+                <div><span>Pause</span><kbd>Space</kbd></div>
+            </div>
+        </aside>
+
+        <section class="player-stage" id="player-stage" aria-label="Game player">
+            <div class="device" id="device">
+                <div class="device__topline">
+                    <span id="device-label">GAME BOY</span>
+                    <span class="model-chip" id="model-chip">NO ROM</span>
+                </div>
+
+                <div class="display-bezel">
+                    <canvas id="screen" width="160" height="144" aria-label="Emulator screen"></canvas>
+                    <div class="screen-message" id="screen-message">
+                        <strong>DROP ROM</strong>
+                        <span>GB · GBC · GBA</span>
+                    </div>
+                </div>
+
+                <div class="shoulder-buttons" aria-label="Shoulder buttons">
+                    <button data-button="l" aria-label="L button">L</button>
+                    <button data-button="r" aria-label="R button">R</button>
+                </div>
+
+                <div class="game-controls" id="game-controls" aria-label="Game controls">
+                    <div class="dpad" aria-label="Directional pad">
+                        <button data-button="up" aria-label="Up"><span>▲</span></button>
+                        <button data-button="left" aria-label="Left"><span>◀</span></button>
+                        <i aria-hidden="true"></i>
+                        <button data-button="right" aria-label="Right"><span>▶</span></button>
+                        <button data-button="down" aria-label="Down"><span>▼</span></button>
+                    </div>
+
+                    <div class="system-buttons">
+                        <button data-button="select">SELECT</button>
+                        <button data-button="start">START</button>
+                    </div>
+
+                    <div class="action-buttons" aria-label="Action buttons">
+                        <button class="action-button action-button--b" data-button="b" aria-label="B button">B</button>
+                        <button class="action-button action-button--a" data-button="a" aria-label="A button">A</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="player-toolbar" aria-label="Player controls">
+                <button class="tool-button" id="pause-button" type="button" disabled>
+                    <span aria-hidden="true" id="pause-icon">Ⅱ</span><span id="pause-label">Pause</span>
+                </button>
+                <button class="tool-button" id="reset-button" type="button" disabled>
+                    <span aria-hidden="true">↻</span><span>Reset</span>
+                </button>
+                <button class="tool-button" id="sound-button" type="button" disabled>
+                    <span aria-hidden="true" id="sound-icon">♪</span><span id="sound-label">Sound on</span>
+                </button>
+                <button class="icon-button" id="import-save-button" type="button" title="Import save" aria-label="Import save" disabled>
+                    <span aria-hidden="true">↥</span>
+                </button>
+                <button class="icon-button" id="export-save-button" type="button" title="Download save" aria-label="Download save" disabled>
+                    <span aria-hidden="true">↓</span>
+                </button>
+                <input id="save-input" type="file" accept=".sav,.srm,.ram,.bin,application/octet-stream" hidden>
+                <button class="icon-button" id="fullscreen-button" type="button" title="Fullscreen" aria-label="Fullscreen">
+                    <span aria-hidden="true">⛶</span>
+                </button>
+                <span class="frame-rate" id="frame-rate">— FPS</span>
+            </div>
+
+            <p class="runtime-note" id="runtime-note" hidden></p>
+        </section>
+    </main>
+
+    <div class="drop-overlay" id="drop-overlay" aria-hidden="true">
+        <strong>Release to load cartridge</strong>
+    </div>
+
+    <dialog class="cartridge-manager" id="cartridge-manager" aria-labelledby="manager-title">
+        <form method="dialog" class="manager-shell">
+            <header class="manager-header">
+                <div>
+                    <p class="eyebrow">Cartridge tools</p>
+                    <h2 id="manager-title">ROM information</h2>
+                    <p id="manager-subtitle">No cartridge loaded</p>
+                </div>
+                <button class="icon-button" type="submit" aria-label="Close cartridge manager" title="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </header>
+
+            <div class="manager-content">
+                <section class="manager-section" aria-labelledby="rom-information-title">
+                    <h3 id="rom-information-title">ROM information</h3>
+                    <dl class="manager-facts" id="manager-rom-facts"></dl>
+                </section>
+
+                <section class="manager-section manager-section--save" aria-labelledby="save-data-title">
+                    <h3 id="save-data-title">Save data</h3>
+                    <dl class="manager-facts" id="manager-save-facts"></dl>
+                    <div class="manager-actions">
+                        <button class="manager-action" id="manager-backup-button" type="button">
+                            <span aria-hidden="true">↓</span>
+                            <span><strong>Backup save data</strong><small>Download a local .sav file</small></span>
+                        </button>
+                        <button class="manager-action" id="manager-restore-button" type="button">
+                            <span aria-hidden="true">↥</span>
+                            <span><strong>Restore save data</strong><small>Write a .sav file to this game</small></span>
+                        </button>
+                    </div>
+                    <p class="manager-transfer-status" id="manager-transfer-status" aria-live="polite">Ready</p>
+                </section>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+</body>
+</html>

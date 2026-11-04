@@ -1,0 +1,93 @@
+{
+  "name": "@rawify/gb",
+  "title": "GB.js",
+  "version": "0.1.0",
+  "description": "Game Boy, Game Boy Color, and Game Boy Advance emulator",
+  "homepage": "https://github.com/rawify/GB.js",
+  "bugs": "https://github.com/rawify/GB.js/issues",
+  "keywords": [
+    "emulator",
+    "game-boy",
+    "game-boy-color",
+    "game-boy-advance",
+    "gba",
+    "arm7tdmi",
+    "sm83",
+    "headless-emulator",
+    "typescript"
+  ],
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/gb.min.js",
+  "jsdelivr": "./dist/gb.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    },
+    "./gb": {
+      "types": "./dist/gb/index.d.ts",
+      "require": "./dist/gb.cjs",
+      "import": "./dist/gb.mjs"
+    },
+    "./gba": {
+      "types": "./dist/gba/index.d.ts",
+      "require": "./dist/gba.cjs",
+      "import": "./dist/gba.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawify/GB.js.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/rawify"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Robert Eisele",
+    "email": "robert@raw.org",
+    "url": "https://raw.org/"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "benchmark:gba": "npm run build && node ./scripts/benchmark-gba.mjs",
+    "data:fetch": "node ./scripts/test-data.mjs fetch",
+    "data:build": "node ./scripts/test-data.mjs build",
+    "data:verify": "node ./scripts/test-data.mjs verify",
+    "data:bios": "node ./scripts/test-data.mjs bios",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:unit": "node --test tests/unit/*.test.mjs",
+    "test:conformance": "node ./scripts/run-conformance-tests.mjs",
+    "test": "npm run build && npm run typecheck && npm run lint && npm run test:unit",
+    "release:check": "npm test && npm run data:verify && npm run test:conformance && npm pack --dry-run",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "esbuild": "^0.25.9",
+    "eslint": "^9.39.5",
+    "globals": "^16.5.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.67.0"
+  }
+}

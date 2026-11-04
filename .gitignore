@@ -1,0 +1,13 @@
+coverage/
+dist/
+node_modules/
+.DS_Store
+test-roms/
+/test-data/
+*.gb
+*.gbc
+*.gba
+*.sav
+*.state
+*.tgz
+npm-debug.log*
